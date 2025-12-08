@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="icon" href="assets/img/icone.png"/>
+    <title>Ecoplay Quiz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;600;700;900&display=swap" rel="stylesheet"/>
+    <style>
+        /* Configuração de fonte e variáveis personalizadas */
+        :root {
+            --main-color: #5549c4; /* Roxo vibrante */
+            --black: #13131a;
+            --bg: #010103;
+            --text-color: rgb(206, 206, 206);
+            --border-color: rgba(255,255,255,0.3);
+
+            /* Caminho da imagem de fundo: altere aqui para sua imagem.
+               Ex.: "assets/img/background.jpg" ou uma URL externa.
+            */
+            --bg-image: url("assets/img/background.jpg");
+        }
+
+        /* === BACKGROUND PRINCIPAL: imagem + overlay escuro para legibilidade === */
+        body {
+            font-family: 'Inter', sans-serif;
+
+            /* overlay (gradiente semitransparente) + imagem */
+            background-image:
+                linear-gradient(135deg, rgba(1,1,3,0.65) 0%, rgba(19,19,26,0.65) 100%),
+                var(--bg-image);
+
+            background-size: cover;          /* cobre toda a viewport */
+            background-position: center;     /* centraliza a imagem */
+            background-repeat: no-repeat;
+            background-attachment: fixed;    /* opcional: imagem fixa ao rolar */
+            color: var(--text-color);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Card principal semi-transparente para melhor contraste com o fundo */
+        .card {
+            background: rgba(10, 10, 12, 0.6); /* semi-transparente */
+            backdrop-filter: blur(6px); /* desfoque do fundo */
+        }
+
+        /* CLASSE DE DESTAQUE SOLICITADA */
+        .game-highlight {
+            color: #ff00ff; /* Cor Rosa Neon */
+            font-weight: 900; /* Super Negrito */
+            font-size: 1.1em; /* Um pouco maior que o normal */
+            text-shadow: 0 0 10px rgba(255, 0, 255, 0.8), 0 0 20px rgba(255, 0, 255, 0.5);
+            transition: all 0.2s ease-in-out;
+        }
+        .game-highlight:hover {
+            transform: scale(1.05);
+            text-shadow: 0 0 15px rgba(255, 0, 255, 1), 0 0 30px rgba(255, 0, 255, 0.8);
+        }
+
+        /* Animação simples para feedback visual */
+        @keyframes pulse-once {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+            100% { transform: scale(1); }
+        }
+
+        .pulse-on-click {
+            animation: pulse-once 0.3s ease-out;
+        }
+
+        /* Classes para a animação de vibração do item de descarte */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10% { transform: translateX(-5px); }
+            30% { transform: translateX(5px); }
+            50% { transform: translateX(-5px); }
+            70% { transform: translateX(5px); }
+            90% { transform: translateX(-5px); }
+        }
+
+        .shake {
+            animation: shake 0.3s ease-in-out;
+        }
+
+        .game-button {
+            transition: all 0.2s;
+            box-shadow: 0 10px 15px -3px rgba(85, 73, 196, 0.5), 0 4px 6px -2px rgba(85, 73, 196, 0.2);
+        }
+        .game-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 25px -5px rgba(85, 73, 196, 0.7), 0 6px 10px -3px rgba(85, 73, 196, 0.3);
+        }
+
+        .option:hover {
+            transform: scale(1.01);
+        }
+
+        /* Classe para responsividade do iframe de vídeo */
+        .video-responsive {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            height: 0;
+            overflow: hidden;
+            max-width: 100%;
+            background: #000;
+            border-radius: 0.5rem;
+        }
+        .video-responsive iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Pequenas melhorias de acessibilidade */
+        input, button { font-family: inherit; }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': 'var(--main-color)',
+                        'background-dark': 'var(--bg)',
+                        'card-bg': 'var(--black)',
+                        'muted': '#888',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-4">
+
+    <div class="container w-full max-w-lg mx-auto">
+        <header class="text-center mb-10">
+            <div class="mb-6">
+                <h1 class="text-5xl md:text-6xl font-extrabold tracking-tight mb-2">
+                    ECOPLAY <span class="text-primary">QUIZ</span>
+                </h1>
+                <div class="underline w-24 h-1 mx-auto bg-primary rounded-full"></div>
+            </div>
+        </header>
+
+        <main class="card p-6 sm:p-8 bg-card-bg shadow-2xl rounded-xl border border-[var(--border-color)]" aria-labelledby="main-title">
+            <!-- --- TELA NOME --- -->
+            <div id="name-input-screen" class="text-center">
+                <h2 class="text-3xl font-bold text-white mb-4">Seja Bem-vindo(a)!</h2>
+                <p class="text-md text-gray-400 mb-6">Insira seu nome para iniciar a jornada.</p>
+                <input type="text" id="user-name-input" placeholder="Seu Nome Aqui" 
+                    class="w-full p-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
+                    maxlength="20">
+                <button id="set-name-button" disabled
+                    class="mt-6 w-full py-3 bg-primary text-white font-bold text-lg rounded-lg transition-all duration-300 opacity-50 cursor-not-allowed shadow-xl hover:bg-opacity-90 active:scale-[0.98]">
+                    Acessar Portal &rarr;
+                </button>
+            </div>
+
+            <!-- --- MENU PRINCIPAL --- -->
+            <div id="game-menu-screen" class="hidden text-center">
+                <h2 id="welcome-message" class="text-3xl font-bold text-white mb-6">Olá, Jogador!</h2>
+                <p class="text-lg text-gray-400 mb-8">O que você gostaria de fazer hoje?</p>
+
+                <div class="space-y-6">
+                    <h3 class="text-2xl font-semibold text-primary border-b border-gray-700 pb-2">🕹️ JOGOS</h3>
+                    <div class="space-y-4">
+                        <button id="select-quiz-button" class="game-button w-full py-4 bg-primary text-white font-bold text-xl rounded-lg active:scale-[0.98]">
+                            🧠 1. Quiz de Conhecimentos
+                        </button>
+                        <button id="select-microplastic-button" class="game-button w-full py-4 bg-green-500 text-white font-bold text-xl rounded-lg active:scale-[0.98]">
+                            ♻️ 2. Classificador de Microplásticos
+                        </button>
+                    </div>
+
+                    <h3 class="text-2xl font-semibold text-primary border-b border-gray-700 pt-6 pb-2">📺 VÍDEOS EDUCATIVOS</h3>
+                    <div class="space-y-4">
+                        <button id="select-videos-button" class="game-button w-full py-4 bg-gray-700 text-white font-bold text-xl rounded-lg hover:bg-gray-600 active:scale-[0.98] shadow-md">
+                            🎥 Ver Vídeos sobre Microplásticos
+                        </button>
+                    </div>
+                </div>
+
+                <button id="back-to-name-button" class="mt-8 text-sm text-gray-400 hover:text-white transition-colors">
+                    &larr; Mudar Nome
+                </button>
+            </div>
+
+            <!-- --- JOGO / ÁREA DE JOGO --- -->
+            <div id="game-play-area" class="hidden">
+                <button id="back-to-menu-from-game-button" 
+                    class="mb-6 w-full py-2 bg-primary text-white font-bold text-lg rounded-lg transition-colors duration-300 shadow-lg hover:bg-opacity-80 active:scale-[0.98] flex items-center justify-center space-x-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2.586l.293.293a1 1 0 001.414-1.414l-7-7a1 1 0 00-1.414 0z"/>
+                        <path fill-rule="evenodd" d="M16 4a1 1 0 00-1-1h-2a1 1 0 00-1 1v3.586l-2-2a1 1 0 00-1.414 1.414L10.586 9H7V7a1 1 0 10-2 0v5a1 1 0 001 1h2a1 1 0 001-1V9.414l2 2a1 1 0 001.414-1.414l-2-2V4h2l2 2v2a1 1 0 102 0V5a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                    </svg>
+                    <span>Menu Principal</span>
+                </button>
+
+                <div id="game-controls" class="flex justify-between items-center mb-6 text-base font-semibold border-b border-gray-700 pb-3">
+                    <span class="text-gray-400">Progresso: <span id="game-progress">0/0</span></span>
+                    <span class="text-white">Pontos: <span id="current-score" class="text-yellow-400 font-extrabold">0</span></span>
+                </div>
+
+                <!-- QUIZ -->
+                <div id="quiz-container" class="hidden">
+                    <h2 id="question-title" class="text-xl md:text-2xl font-bold mb-6 text-white leading-relaxed">Carregando pergunta...</h2>
+                    <div id="difficulty-badge" class="text-xs font-semibold px-3 py-1 rounded-full w-fit mb-4 uppercase tracking-wider"></div>
+                    <div class="options space-y-4" role="list" id="options-container"></div>
+                    <button id="next-button" 
+                        class="mt-8 w-full py-3 bg-primary text-white font-bold rounded-lg transition-all duration-300 opacity-0 pointer-events-none shadow-lg hover:bg-opacity-90 active:scale-[0.98]">
+                        Próxima Pergunta &rarr;
+                    </button>
+                </div>
+
+                <!-- CLASSIFICADOR -->
+                <div id="microplastic-container" class="hidden text-center">
+                    <h2 class="text-2xl font-bold text-white mb-6">Classifique o Item</h2>
+                    <div id="item-to-sort" class="p-8 bg-gray-800 rounded-xl shadow-xl mx-auto w-full mb-8 transform transition-all duration-300">
+                        <p id="item-text" class="text-3xl font-extrabold text-primary mb-2">Item</p>
+                        <p class="text-sm text-gray-400">Clique na categoria correta abaixo.</p>
+                    </div>
+
+                    <div id="sort-buttons" class="grid grid-cols-2 gap-4">
+                        <button id="bin-no-microplastic" data-correct="false"
+                            class="p-4 bg-green-600 text-white font-bold rounded-lg shadow-md hover:bg-green-700 transition-colors active:scale-[0.98]">
+                            NÃO Contém ❌
+                        </button>
+                        <button id="bin-microplastic" data-correct="true"
+                            class="p-4 bg-red-600 text-white font-bold rounded-lg shadow-md hover:bg-red-700 transition-colors active:scale-[0.98]">
+                            Contém ✅
+                        </button>
+                    </div>
+
+                    <div id="feedback-message" class="mt-4 text-lg font-semibold h-6"></div>
+
+                    <button id="next-plastic-button" 
+                        class="mt-8 w-full py-3 bg-primary text-white font-bold rounded-lg transition-all duration-300 opacity-0 pointer-events-none shadow-lg hover:bg-opacity-90 active:scale-[0.98]">
+                        Próximo Item &rarr;
+                    </button>
+                </div>
+
+                <!-- VÍDEOS -->
+                <div id="video-container" class="hidden text-center">
+                    <h2 class="text-3xl font-bold text-white mb-6">Vídeos sobre Microplásticos</h2>
+                    <p class="text-gray-400 mb-8">Assista para aprofundar seu conhecimento sobre o tema.</p>
+                    <div id="video-list" class="space-y-8"></div>
+                </div>
+
+                <!-- RESULTADOS -->
+                <div id="results-container" class="hidden text-center">
+                    <h2 class="text-4xl font-extrabold text-primary mb-4">Fim de Jogo!</h2>
+                    <p id="results-message" class="text-lg text-gray-300 mb-6">Mensagem de Parabéns.</p>
+                    <div class="p-8 bg-gray-800 rounded-xl shadow-inner mx-auto max-w-xs mb-8">
+                        <p class="text-2xl font-semibold text-gray-200">Pontuação Final:</p>
+                        <p id="final-score" class="text-6xl font-extrabold mt-3 text-yellow-400">0</p>
+                    </div>
+
+                    <button id="results-menu-button" 
+                        class="w-full py-3 bg-primary text-white font-bold text-lg rounded-lg transition-all duration-300 shadow-xl hover:bg-opacity-90 active:scale-[0.98] flex items-center justify-center space-x-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2.586l.293.293a1 1 0 001.414-1.414l-7-7a1 1 0 00-1.414 0z"/>
+                            <path fill-rule="evenodd" d="M16 4a1 1 0 00-1-1h-2a1 1 0 00-1 1v3.586l-2-2a1 1 0 00-1.414 1.414L10.586 9H7V7a1 1 0 10-2 0v5a1 1 0 001 1h2a1 1 0 001-1V9.414l2 2a1 1 0 001.414-1.414l-2-2V4h2l2 2v2a1 1 0 102 0V5a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                        </svg>
+                        <span>Voltar ao Menu Principal</span>
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // --- VARIÁVEIS DE ESTADO DO PORTAL ---
+        let userName = '';
+        let currentScore = 0;
+        let currentGameId = null; // 'quiz', 'microplastic' ou 'videos'
+
+        // --- DADOS DO QUIZ DE CONHECIMENTOS (GAME 1) ---
+        const allQuestions = [
+            {
+                question: "Qual material NÃO contém microplásticos?",
+                options: ["Esfoliantes faciais", "Pasta de dente", "Sabonete líquido", "Maçã"],
+                correctIndex: 3,
+                difficulty: 'FÁCIL',
+                points: 1
+            },
+            {
+                question: "Qual dos três Rs (Reduzir, Reutilizar, Reciclar) é o mais importante para o meio ambiente?",
+                options: ["Reduzir (gerar menos lixo)", "Reutilizar", "Reciclar", "Nenhum"],
+                correctIndex: 0,
+                difficulty: 'FÁCIL',
+                points: 1
+            },
+            {
+                question: "Quando o plástico é ingerido por peixes, ele pode voltar para onde?",
+                options: ["Apenas para o fundo do mar", "Para a nossa própria mesa, através da cadeia alimentar", "Para o Polo Norte", "Nenhum"],
+                correctIndex: 1,
+                difficulty: 'MÉDIO',
+                points: 2
+            },
+            {
+                question: "Qual é o problema principal de um plástico levar centenas de anos para se fragmentar?",
+                options: ["Ele fica no oceano por muito tempo", "Ele afunda rapidamente", "Ele vira adubo", "Nenhuma das Alternativas"],
+                correctIndex: 0,
+                difficulty: 'MÉDIO',
+                points: 2
+            },
+            {
+                question: "Qual projeto brasileiro citado em nosso site monitora a poluição de microplásticos no Atlântico Sul?",
+                options: ["Projeto Tamar", "Projeto MicroMar", "Projeto Baleia Jubarte", "Projeto B.A.R.B.I.E.R 4.0"],
+                correctIndex: 1,
+                difficulty: 'DIFÍCIL',
+                points: 3
+            },
+            {
+                question: "A presença de microplásticos nos oceanos tem relação com qual outro grande problema ambiental global?",
+                options: ["Extinção de Dinossauros", "Alinhamento Planetário", "Chuva ácida", "Mudanças Climáticas"],
+                correctIndex: 3,
+                difficulty: 'DIFÍCIL',
+                points: 3
+            }
+        ];
+        let quizState = {
+            currentQuestionIndex: 0,
+            shuffledQuestions: [],
+            MAX_QUESTIONS: 4,
+            isAnswered: false
+        };
+
+        // --- DADOS DO CLASSIFICADOR DE MICROPLÁSTICOS (GAME 2) ---
+        const plasticItems = [
+            { item: "Glitter para Cosméticos", hasPlastic: true },
+            { item: "Fibra de um Casaco de Lã", hasPlastic: false },
+            { item: "Pó de Pneu Usado (Estradas)", hasPlastic: true },
+            { item: "Semente de Abacate", hasPlastic: false },
+            { item: "Microesferas em Pasta de Dente", hasPlastic: true },
+            { item: "Grão de Café", hasPlastic: false },
+        ];
+        let plasticState = {
+            currentItemIndex: 0,
+            shuffledItems: [],
+            MAX_ITEMS: 5,
+            isAnswered: false
+        };
+
+        // --- DADOS DOS VÍDEOS EDUCATIVOS (NOVO) ---
+        const educationalVideos = [
+            {
+                title: "O que são microplásticos e como evitar?",
+                source: "https://www.youtube.com/embed/J1Sa_xkyWWg",
+                description: "Reportagem sobre microplásticos no Brasil, presença no corpo humano e dicas de prevenção."
+            },
+            {
+                title: "DO PLÁSTICO AO MICROPLÁSTICO",
+                source: "https://www.youtube.com/embed/ah6R7eF30Q0",
+                description: "Entenda como acontece."
+            }
+        ];
+
+        // --- ELEMENTOS DO DOM (Geral) ---
+        const nameInputScreen = document.getElementById('name-input-screen');
+        const gameMenuScreen = document.getElementById('game-menu-screen');
+        const gamePlayArea = document.getElementById('game-play-area');
+        const resultsContainer = document.getElementById('results-container');
+        const userNameInput = document.getElementById('user-name-input');
+        const setNameButton = document.getElementById('set-name-button');
+        const welcomeMessage = document.getElementById('welcome-message');
+        const finalScoreText = document.getElementById('final-score');
+        const resultsMessage = document.getElementById('results-message');
+        const gameProgressSpan = document.getElementById('game-progress');
+        const currentScoreSpan = document.getElementById('current-score');
+        const gameControls = document.getElementById('game-controls'); 
+        
+        // Elemento do botão de voltar
+        const backToMenuFromGameButton = document.getElementById('back-to-menu-from-game-button');
+        // NOVO Elemento do botão de voltar nos resultados
+        const resultsMenuButton = document.getElementById('results-menu-button'); 
+
+        // Elementos do Quiz (Game 1)
+        const quizContainer = document.getElementById('quiz-container');
+        const questionTitle = document.getElementById('question-title');
+        const optionsContainer = document.getElementById('options-container');
+        const nextButton = document.getElementById('next-button');
+        const difficultyBadge = document.getElementById('difficulty-badge');
+        
+        // Elementos do Classificador (Game 2)
+        const microplasticContainer = document.getElementById('microplastic-container');
+        const itemToSortDiv = document.getElementById('item-to-sort');
+        const itemText = document.getElementById('item-text');
+        const binNoMicroplastic = document.getElementById('bin-no-microplastic');
+        const binMicroplastic = document.getElementById('bin-microplastic');
+        const feedbackMessage = document.getElementById('feedback-message');
+        const nextPlasticButton = document.getElementById('next-plastic-button');
+
+        // Elementos do Vídeo (NOVO)
+        const videoContainer = document.getElementById('video-container');
+        const videoList = document.getElementById('video-list');
+        const selectVideosButton = document.getElementById('select-videos-button');
+
+        // --- FUNÇÕES UTILITÁRIAS ---
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function switchScreen(screenId) {
+            // Esconde todas as telas principais
+            nameInputScreen.classList.add('hidden');
+            gameMenuScreen.classList.add('hidden');
+            gamePlayArea.classList.add('hidden');
+            quizContainer.classList.add('hidden');
+            microplasticContainer.classList.add('hidden');
+            videoContainer.classList.add('hidden');
+            resultsContainer.classList.add('hidden');
+            
+            // Oculta/Mostra controles de jogo e botão de voltar (UNIFICADO)
+            gameControls.classList.add('hidden'); 
+            backToMenuFromGameButton.classList.add('hidden');
+
+            // Mostra a tela solicitada
+            switch (screenId) {
+                case 'name-input':
+                    nameInputScreen.classList.remove('hidden');
+                    break;
+                case 'menu':
+                    gameMenuScreen.classList.remove('hidden');
+                    welcomeMessage.textContent = `Olá, ${userName}!`;
+                    break;
+                case 'quiz':
+                case 'microplastic':
+                case 'videos':
+                    // Jogos e Vídeos - Mostra o botão unificado de voltar
+                    gamePlayArea.classList.remove('hidden');
+                    backToMenuFromGameButton.classList.remove('hidden');
+                    
+                    if (screenId === 'quiz') {
+                        gameControls.classList.remove('hidden');
+                        quizContainer.classList.remove('hidden');
+                        currentGameId = 'quiz';
+                    } else if (screenId === 'microplastic') {
+                        gameControls.classList.remove('hidden');
+                        microplasticContainer.classList.remove('hidden');
+                        currentGameId = 'microplastic';
+                    } else if (screenId === 'videos') {
+                        videoContainer.classList.remove('hidden');
+                        currentGameId = 'videos';
+                        renderVideoScreen();
+                    }
+                    break;
+                case 'results':
+                    gamePlayArea.classList.remove('hidden');
+                    resultsContainer.classList.remove('hidden');
+                    break;
+            }
+        }
+
+        function updateScoreDisplay() {
+            currentScoreSpan.textContent = currentScore;
+        }
+        
+        // --- LÓGICA DO PORTAL (Telas) ---
+        function initPortal() {
+            switchScreen('name-input');
+        }
+
+        // Validação do nome
+        userNameInput.addEventListener('input', () => {
+            if (userNameInput.value.trim().length > 2) {
+                setNameButton.disabled = false;
+                setNameButton.classList.remove('opacity-50', 'cursor-not-allowed');
+            } else {
+                setNameButton.disabled = true;
+                setNameButton.classList.add('opacity-50', 'cursor-not-allowed');
+            }
+        });
+
+        // Clique no botão "Acessar Portal"
+        setNameButton.addEventListener('click', () => {
+            userName = userNameInput.value.trim();
+            switchScreen('menu');
+        });
+
+        // Clique no botão "Mudar Nome"
+        document.getElementById('back-to-name-button').addEventListener('click', () => {
+             switchScreen('name-input');
+        });
+
+        // Clique no botão "Menu Principal" (unificado)
+        backToMenuFromGameButton.addEventListener('click', () => {
+            switchScreen('menu');
+        });
+        
+        // Clique no botão da tela de resultados
+        resultsMenuButton.addEventListener('click', () => {
+            switchScreen('menu');
+        });
+
+        // --- LÓGICA DE JOGOS E VÍDEOS ---
+        document.getElementById('select-quiz-button').addEventListener('click', () => {
+            currentScore = 0;
+            updateScoreDisplay();
+            quizState.currentQuestionIndex = 0;
+            quizState.isAnswered = false;
+            quizState.shuffledQuestions = shuffleArray([...allQuestions]).slice(0, quizState.MAX_QUESTIONS);
+            switchScreen('quiz');
+            renderQuizQuestion();
+        });
+
+        document.getElementById('select-microplastic-button').addEventListener('click', () => {
+            currentScore = 0;
+            updateScoreDisplay();
+            plasticState.currentItemIndex = 0;
+            plasticState.isAnswered = false;
+            plasticState.shuffledItems = shuffleArray([...plasticItems]).slice(0, plasticState.MAX_ITEMS);
+            switchScreen('microplastic');
+            renderPlasticItem();
+        });
+
+        selectVideosButton.addEventListener('click', () => {
+            switchScreen('videos');
+        });
+
+        // --- QUIZ ---
+        function renderQuizQuestion() {
+            if (quizState.currentQuestionIndex >= quizState.MAX_QUESTIONS) {
+                showResults('quiz');
+                return;
+            }
+
+            const currentQ = quizState.shuffledQuestions[quizState.currentQuestionIndex];
+            const qNum = quizState.currentQuestionIndex + 1;
+
+            gameProgressSpan.textContent = `${qNum}/${quizState.MAX_QUESTIONS}`;
+            questionTitle.textContent = currentQ.question;
+            optionsContainer.innerHTML = '';
+            nextButton.classList.add('opacity-0', 'pointer-events-none');
+            quizState.isAnswered = false;
+
+            difficultyBadge.textContent = `${currentQ.difficulty} (${currentQ.points} PONTO${currentQ.points > 1 ? 'S' : ''})`;
+            let badgeClass = 'bg-gray-700/50 text-white'; 
+            if (currentQ.difficulty === 'FÁCIL') badgeClass = 'bg-green-700/50 text-green-300';
+            else if (currentQ.difficulty === 'MÉDIO') badgeClass = 'bg-yellow-700/50 text-yellow-300';
+            else if (currentQ.difficulty === 'DIFÍCIL') badgeClass = 'bg-red-700/50 text-red-300';
+            difficultyBadge.className = 'text-xs font-semibold px-3 py-1 rounded-full w-fit mb-4 uppercase tracking-wider ' + badgeClass;
+
+            const badgeLabels = ['A', 'B', 'C', 'D'];
+            currentQ.options.forEach((optionText, index) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = "option flex items-center bg-gray-800 p-4 rounded-lg cursor-pointer transition-all duration-300 hover:shadow-lg hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-primary/50";
+                optionDiv.setAttribute('tabindex', '0');
+                optionDiv.setAttribute('data-index', index);
+                
+                optionDiv.innerHTML = `
+                    <div class="badge w-8 h-8 flex-shrink-0 bg-primary text-white font-bold rounded-full flex items-center justify-center text-sm mr-4">
+                        ${badgeLabels[index]}
+                    </div>
+                    <div class="label text-base flex-grow">${optionText}</div>
+                `;
+
+                optionDiv.addEventListener('click', handleQuizAnswerClick);
+                optionsContainer.appendChild(optionDiv);
+            });
+        }
+
+        function handleQuizAnswerClick(event) {
+            if (quizState.isAnswered) return;
+            quizState.isAnswered = true;
+
+            // Desativa cliques
+            optionsContainer.querySelectorAll('.option').forEach(opt => {
+                opt.removeEventListener('click', handleQuizAnswerClick);
+                opt.classList.remove('cursor-pointer', 'hover:shadow-lg', 'hover:bg-gray-700', 'focus:ring-primary/50');
+                opt.classList.add('cursor-default');
+            });
+
+            const currentQ = quizState.shuffledQuestions[quizState.currentQuestionIndex];
+            const selectedIndex = parseInt(event.currentTarget.getAttribute('data-index'));
+            const isCorrect = selectedIndex === currentQ.correctIndex;
+            
+            event.currentTarget.classList.add('pulse-on-click');
+
+            if (isCorrect) {
+                currentScore += currentQ.points;
+                event.currentTarget.classList.add('border-green-500', 'border-4', 'bg-green-900/30');
+            } else {
+                event.currentTarget.classList.add('border-red-500', 'border-4', 'bg-red-900/30');
+                optionsContainer.querySelector(`[data-index="${currentQ.correctIndex}"]`).classList.add('border-green-500', 'border-4', 'bg-green-900/30');
+            }
+
+            updateScoreDisplay();
+
+            nextButton.classList.remove('opacity-0', 'pointer-events-none');
+            nextButton.classList.add('opacity-100', 'pointer-events-auto');
+        }
+
+        nextButton.addEventListener('click', () => {
+            optionsContainer.querySelectorAll('.option').forEach(opt => opt.classList.remove('pulse-on-click'));
+            quizState.currentQuestionIndex++;
+            renderQuizQuestion();
+        });
+
+        // --- CLASSIFICADOR ---
+        function renderPlasticItem() {
+            if (plasticState.currentItemIndex >= plasticState.MAX_ITEMS) {
+                showResults('microplastic');
+                return;
+            }
+
+            const currentItem = plasticState.shuffledItems[plasticState.currentItemIndex];
+            const itemNum = plasticState.currentItemIndex + 1;
+
+            gameProgressSpan.textContent = `${itemNum}/${plasticState.MAX_ITEMS}`;
+            itemText.textContent = currentItem.item;
+            
+            plasticState.isAnswered = false;
+            feedbackMessage.textContent = '';
+            itemToSortDiv.classList.remove('shake', 'bg-green-800/30', 'bg-red-800/30');
+            binNoMicroplastic.disabled = false;
+            binMicroplastic.disabled = false;
+            
+            binNoMicroplastic.classList.remove('bg-gray-500', 'opacity-70', 'bg-yellow-500', 'shadow-xl');
+            binMicroplastic.classList.remove('bg-gray-500', 'opacity-70', 'bg-yellow-500', 'shadow-xl');
+            binNoMicroplastic.classList.add('bg-green-600', 'hover:bg-green-700');
+            binMicroplastic.classList.add('bg-red-600', 'hover:bg-red-700');
+            
+            nextPlasticButton.classList.add('opacity-0', 'pointer-events-none');
+        }
+
+        function handlePlasticAnswer(isBinPlastic) {
+            if (plasticState.isAnswered) return;
+            plasticState.isAnswered = true;
+            const currentItem = plasticState.shuffledItems[plasticState.currentItemIndex];
+            const isCorrect = isBinPlastic === currentItem.hasPlastic;
+            
+            binNoMicroplastic.disabled = true;
+            binMicroplastic.disabled = true;
+            binNoMicroplastic.classList.remove('hover:bg-green-700');
+            binMicroplastic.classList.remove('hover:bg-red-700');
+            binNoMicroplastic.classList.add('bg-gray-500', 'opacity-70');
+            binMicroplastic.classList.add('bg-gray-500', 'opacity-70');
+
+            if (isCorrect) {
+                currentScore += 1;
+                updateScoreDisplay();
+                feedbackMessage.innerHTML = '<span class="text-green-400">✅ CORRETO! (+1 ponto)</span>';
+                itemToSortDiv.classList.add('bg-green-800/30');
+            } else {
+                itemToSortDiv.classList.remove('shake');
+                feedbackMessage.innerHTML = `<span class="text-red-400">❌ ERRADO. O item é classificado como: ${currentItem.hasPlastic ? 'Contém Microplástico' : 'NÃO Contém Microplástico'}.</span>`;
+                itemToSortDiv.classList.add('bg-red-800/30', 'shake');
+            }
+
+            const correctBin = currentItem.hasPlastic ? binMicroplastic : binNoMicroplastic;
+            correctBin.classList.remove('opacity-70', 'bg-green-600', 'bg-red-600');
+            correctBin.classList.add('bg-yellow-500', 'shadow-xl');
+
+            nextPlasticButton.classList.remove('opacity-0', 'pointer-events-none');
+            nextPlasticButton.classList.add('opacity-100', 'pointer-events-auto');
+        }
+
+        binNoMicroplastic.addEventListener('click', () => handlePlasticAnswer(false));
+        binMicroplastic.addEventListener('click', () => handlePlasticAnswer(true));
+        
+        nextPlasticButton.addEventListener('click', () => {
+            plasticState.currentItemIndex++;
+            renderPlasticItem();
+        });
+
+        // --- VÍDEOS ---
+        function renderVideoScreen() {
+            videoList.innerHTML = '';
+            gameControls.classList.add('hidden');
+
+            educationalVideos.forEach((video, index) => {
+                const videoCard = document.createElement('div');
+                videoCard.className = "text-left p-4 bg-gray-800 rounded-xl shadow-lg border border-gray-700";
+                
+                videoCard.innerHTML = `
+                    <h4 class="text-xl font-bold text-white mb-3">${index + 1}. ${video.title}</h4>
+                    <div class="video-responsive mb-4">
+                        <iframe src="${video.source}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    <p class="text-sm text-gray-400">${video.description}</p>
+                `;
+                videoList.appendChild(videoCard);
+            });
+        }
+
+        // --- RESULTADOS ---
+        function showResults(gameId) {
+            let totalPossibleScore;
+            
+            if (gameId === 'quiz') {
+                totalPossibleScore = quizState.shuffledQuestions.reduce((sum, q) => sum + q.points, 0);
+                resultsMessage.textContent = `Você completou o Quiz de Conhecimentos, ${userName}!`;
+            } else if (gameId === 'microplastic') {
+                totalPossibleScore = plasticState.MAX_ITEMS;
+                resultsMessage.textContent = `Você completou a classificação de ${plasticState.MAX_ITEMS} itens, ${userName}!`;
+            } else {
+                resultsMessage.textContent = `Jogo finalizado.`;
+                totalPossibleScore = 0;
+            }
+            
+            const percentage = totalPossibleScore > 0 ? (currentScore / totalPossibleScore) * 100 : 0;
+            if (percentage >= 80) resultsMessage.textContent += ` Excelente desempenho! 🏆`;
+            else if (percentage >= 50) resultsMessage.textContent += ` Bom trabalho! Continue aprendendo! 👍`;
+            else resultsMessage.textContent += ` Você pode se sair melhor. Não deixe de ver os vídeos! 📚`;
+
+            finalScoreText.textContent = `${currentScore} / ${totalPossibleScore}`;
+            switchScreen('results');
+        }
+
+        // --- INICIALIZAÇÃO ---
+        window.onload = initPortal;
+    </script>
+</body>
+</html>

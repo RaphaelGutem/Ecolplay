@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="assets/img/icone.png">
+    <link rel="stylesheet" href="assets/css/style1.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;800&display=swap" rel="stylesheet">
+    <title>Ecoplay</title>
+</head>
+
+<body>
+    <!-- Skip link para acessibilidade -->
+    <a class="skip-link" href="#main-content">Pular para o conteúdo</a>
+
+    <header class="site-header" role="banner">
+        <nav class="navV" aria-label="Navegação principal">
+            <div class="containerR">
+                <!-- Logo (descomente e ajuste se tiver) -->
+                <!-- <div class="logo"><a href="/"><img src="assets/img/logo.png" alt="Ecoplay logo" style="height:40px"></a></div> -->
+
+                <div id="mainListDiv" class="main_list" role="navigation" aria-label="Links principais">
+                    <ul class="navlinks" role="menubar">
+                        <li role="none"><a role="menuitem" href="#">Início</a></li>
+                        <li role="none"><a role="menuitem" href="#about">Sobre</a></li>
+                        <li role="none"><a role="menuitem" href="#scary-numbers">Dados</a></li>
+                        <li role="none"><a role="menuitem" href="#solutions">Soluções</a></li>
+                    </ul>
+                </div>
+
+                <div class="nav-right-actions" id="navRightActions">
+                    <a href="game.html" class="nav-gamificacao" id="gamificacaoLink">Responda o Quiz</a>
+
+                    <!-- botão de login (visível quando não autenticado) -->
+                    <button id="loginBtn" class="btn-login" type="button" aria-haspopup="dialog"
+                        aria-controls="authModal">Login</button>
+
+                    <!-- widget do usuário (inicialmente escondido) -->
+                    <div id="userWidget" class="user-widget" aria-hidden="true" style="display:none;">
+                        <button id="userToggle" class="user-toggle" aria-haspopup="true" aria-expanded="false"
+                            aria-label="Abrir menu do usuário">
+                            <span class="user-avatar" aria-hidden="true"></span>
+                        </button>
+                        <div id="userMenu" class="user-menu" role="menu" aria-hidden="true">
+                            <div class="user-name" id="userNameDisplay" aria-hidden="true">Usuário</div>
+                            <button id="profileBtn" class="user-menu-btn" role="menuitem">Perfil</button>
+                            <button id="logoutBtn" class="user-menu-btn" role="menuitem">Logout</button>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="navTrigger" aria-label="Abrir menu" aria-controls="mainListDiv" aria-expanded="false"
+                    type="button">
+                    <i></i>
+                    <i></i>
+                    <i></i>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main id="main-content" class="container" role="main" aria-live="polite">
+        <div class="list" aria-live="polite">
+            <div class="list-item" role="group" aria-label="Slide 1">
+                <img src="assets/img/Tartaruga.png" alt="Tartaruga Marinha">
+                <div class="content" aria-hidden="false">
+                    <h2 class="title">ALERTA AZUL</h2>
+                    <p class="description">Das suas mãos ao mar: todo o lixo que produzimos encontra o caminho para os
+                        oceanos. Entenda o ciclo de contaminação, o impacto nas mudanças climáticas e como você pode ser
+                        parte da solução.</p>
+                </div>
+            </div>
+
+            <div class="list-item" role="group" aria-label="Slide 2">
+                <img src="assets/img/montanha-de-lixo.jpg" alt="Montanha de lixo">
+                <div class="content" aria-hidden="false">
+                    <h2 class="title">O PLANETA É ÁGUA</h2>
+                    <p class="description">Microplásticos estão espalhados por todo o ambiente e já contaminam o ar, diversos alimentos e até a água potável. Estudos internacionais mostram que cerca de 83% das amostras de água da torneira possuem partículas de microplástico, revelando que essa forma de poluição é global e amplamente disseminada.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="arrows" aria-hidden="false">
+            <button class="back" type="button" aria-label="Anterior">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+            </button>
+
+            <button class="next" type="button" aria-label="Próximo">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9 6L15 12L9 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+            </button>
+        </div>
+    </main>
+
+    <section class="about" id="about">
+        <div class="row">
+            <div class="container-image">
+                <img src="assets/img/Lixo%20no%20Mar.png" alt="Lixo no mar">
+            </div>
+            <div class="content">
+                <h3>MICROPLÁSTICOS: DE ONDE VÊM?</h3>
+                <p>Os microplásticos são partículas com menos de 5 milímetros, invisíveis a olho nu, mas presentes em
+                    praticamente todo o ambiente aquático. Eles não são apenas resultado da fragmentação de garrafas e
+                    embalagens jogadas nas praias; grande parte vem da lavagem de roupas sintéticas, da abrasão de pneus
+                    e de produtos de higiene, atingindo rios e oceanos de forma silenciosa.</p>
+                <p>Uma vez na água, essas partículas são ingeridas por peixes e outros organismos, entrando na cadeia
+                    alimentar. Estudos mostram que os microplásticos, além de tóxicos, podem liberar produtos químicos
+                    perigosos no ecossistema e em nossos corpos, tornando-se um dos maiores desafios para a saúde do
+                    Planeta Água.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="about" id="problems">
+        <div class="row">
+            <div class="container-image">
+                <img src="assets/img/Tartaruga%20com%20Pl%C3%A1stico%20na%20boca.jpg" alt="Tartaruga com plástico">
+            </div>
+            <div class="content">
+                <h3>MICROPLÁSTICOS: QUAIS SÃO OS PRINCIPAIS PROBLEMAS?</h3>
+                <p>Os microplásticos não apenas poluem os oceanos, mas também ameaçam a saúde humana e o equilíbrio dos
+                    ecossistemas. Eles absorvem substâncias tóxicas, como metais pesados e pesticidas, que entram na
+                    cadeia alimentar.</p>
+                <p>Além disso, essas partículas são inaladas e ingeridas por animais e seres humanos, podendo causar
+                    inflamações, distúrbios hormonais e até problemas respiratórios. No meio ambiente, prejudicam a
+                    reprodução marinha e comprometem a qualidade da água.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="scary-numbers" id="scary-numbers">
+        <div class="scary-numbers-background" aria-hidden="true"></div>
+        <h2 class="title">Números que <span>Assustam</span></h2>
+        <div class="numbers-container">
+            <div class="number-card" role="article">
+                <div class="card-inner">
+                    <div class="main-content">
+                        <span class="number" data-target="8">0</span>
+                        <span class="unit">Milhões de Toneladas</span>
+                        <p class="description">De plástico entram nos oceanos anualmente</p>
+                    </div>
+                    <div class="hover-balloon" aria-hidden="true">
+                        <h4>Impacto Anual</h4>
+                        <p>Essa quantidade massiva de plástico não só polui, mas também ameaça a vida marinha e os
+                            ecossistemas oceânicos.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="number-card" role="article">
+                <div class="card-inner">
+                    <div class="main-content">
+                        <span class="number" data-target="800">0</span>
+                        <span class="unit">Espécies Afetadas</span>
+                        <p class="description">De animais marinhos por poluição plástica</p>
+                    </div>
+                    <div class="hover-balloon" aria-hidden="true">
+                        <h4>Biodiversidade em Risco</h4>
+                        <p>Desde pequenos plânctons até grandes mamíferos, a cadeia alimentar é gravemente impactada.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="number-card" role="article">
+                <div class="card-inner">
+                    <div class="main-content">
+                        <span class="number" data-target="90">0</span>
+                        <span class="unit">Porcentagem</span>
+                        <p class="description">Da água potável contaminada com microplásticos</p>
+                    </div>
+                    <div class="hover-balloon" aria-hidden="true">
+                        <h4>Sua Água, Seu Corpo</h4>
+                        <p>Microplásticos são encontrados em praticamente todas as fontes de água, afetando nossa saúde
+                            de formas ainda desconhecidas.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="number-card" role="article">
+                <div class="card-inner">
+                    <div class="main-content">
+                        <span class="number" data-target="500">0</span>
+                        <span class="unit">Anos</span>
+                        <p class="description">Para um plástico se decompor no oceano</p>
+                    </div>
+                    <div class="hover-balloon" aria-hidden="true">
+                        <h4>Legado Duradouro</h4>
+                        <p>O plástico que descartamos hoje permanecerá no ambiente por muitas gerações futuras.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="solutions" id="solutions">
+        <div class="solutions-wave-background" aria-hidden="true"></div>
+
+        <div class="solutions-content-wrapper">
+            <div class="solutions-image-col">
+                <img src="assets/img/Microplastico.jpg" alt="Microplásticos" class="solutions-main-image">
+            </div>
+
+            <div class="solutions-cards-col">
+                <h2 class="title solutions-title">Soluções <span>Existentes</span></h2>
+
+                <div class="solution-card">
+                    <div class="card-icon" aria-hidden="true"></div>
+                    <div class="card-text">
+                        <h4>Projeto MicroMar</h4>
+                        <p>Iniciativa brasileira focada na monitorização e caracterização da poluição por microplásticos
+                            no Atlântico Sul. Transforma dados brutos em conhecimento essencial para a conservação
+                            marinha.</p>
+                        <a href="https://ifgoiano.edu.br/home/index.php/component/content/article/57-destaque/24791-instituto-lidera-pesquisa-sobre-microplasticos-na-costa-brasileira.html?Itemid=101"
+                            class="btn-small" target="_blank" rel="noopener noreferrer">Saber Mais</a>
+                    </div>
+                </div>
+
+                <div class="solution-card">
+                    <div class="card-icon" aria-hidden="true"></div>
+                    <div class="card-text">
+                        <h4>B.A.R.B.I.E. 4.0</h4>
+                        <p>Plataforma tecnológica escalável que desenvolve soluções de engenharia, como barreiras
+                            automatizadas, para a coleta de lixo flutuante em rios e reservatórios.</p>
+                        <a href="https://cnpem.br/barbie-sem-plastico/" class="btn-small" target="_blank"
+                            rel="noopener noreferrer">Saber Mais</a>
+                    </div>
+                </div>
+
+                <div class="solution-card">
+                    <div class="card-icon" aria-hidden="true"></div>
+                    <div class="card-text">
+                        <h4>Economia Circular</h4>
+                        <p>Visão completa do desempenho de materiais, focada em manter produtos e materiais em uso pelo
+                            maior tempo possível. Reduz drasticamente o descarte que atinge os oceanos.</p>
+                        <a href="https://www.gov.br/fazenda/pt-br/acesso-a-informacao/acoes-e-programas/transformacao-ecologica/transformacao-ecologica-pagina-antiga/economia-circular"
+                            class="btn-small" target="_blank" rel="noopener noreferrer">Entenda o Ciclo</a>
+                    </div>
+                </div>
+
+                <div class="solution-card">
+                    <div class="card-icon" aria-hidden="true"></div>
+                    <div class="card-text">
+                        <h4>Consumo Consciente</h4>
+                        <p>Aumente a visibilidade de alternativas sustentáveis e gere menos lixo. Pequenas mudanças nas
+                            suas escolhas diárias têm um impacto direto e imediato na preservação do Planeta Água.</p>
+                        <a href="https://www2.camara.leg.br/a-camara/estruturaadm/gestao-na-camara-dos-deputados/responsabilidade-social-e-ambiental/ecocamara/consumo-consciente"
+                            class="btn-small" target="_blank" rel="noopener noreferrer">VEJA DICAS</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer" role="contentinfo">
+        <div class="footer-container">
+            <div class="footer-col footer-col-nav">
+                <h4 class="footer-title">Explorar</h4>
+                <ul class="footer-links">
+                    <li><a href="#">Início</a></li>
+                    <li><a href="#about">Sobre</a></li>
+                    <li><a href="#scary-numbers">Dados</a></li>
+                    <li><a href="#solutions">Soluções</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col footer-col-contact">
+                <h4 class="footer-title">Fale Conosco</h4>
+                <ul class="footer-contact-info">
+                    <li aria-hidden="true">Paulista | Pernambuco | Brasil</li>
+                    <li aria-hidden="true">+55 (81) 98571-0491</li>
+                    <li aria-hidden="true">Ecoplay2026@gmail.com</li>
+                </ul>
+            </div>
+
+            <div class="footer-col footer-col-social">
+                <h4 class="footer-title">Siga-nos</h4>
+                <div class="footer-social-links">
+                    <a href="https://www.facebook.com/profile.php?id=61584963022290" class="social-icon"
+                        aria-label="Facebook" target="_blank" rel="noopener noreferrer">
+                        <img width="40" height="40" src="https://img.icons8.com/color/40/facebook-new.png"
+                            alt="Facebook" />
+                    </a>
+                    <a href="https://x.com/EcoplayM" class="social-icon" aria-label="X" target="_blank"
+                        rel="noopener noreferrer">
+                        <img width="40" height="40" src="https://img.icons8.com/pulsar-color/40/twitterx.png" alt="X" />
+                    </a>
+                    <a href="https://www.instagram.com/ecoplay_microplastico/" class="social-icon"
+                        aria-label="Instagram" target="_blank" rel="noopener noreferrer">
+                        <img width="40" height="40" src="https://img.icons8.com/fluency/40/instagram-new.png"
+                            alt="Instagram" />
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; Ecoplay 2025 | Solução para microplásticos</p>
+        </div>
+    </footer>
+
+    <!-- AUTH MODAL (Login / Cadastrar / Redefinir senha) -->
+    <div id="authModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-hidden="true"
+        aria-labelledby="authTitle">
+        <div class="modal-window" role="document" aria-live="polite">
+            <div class="modal-header">
+                <h3 id="authTitle">Entrar</h3>
+                <button class="modal-close" id="authClose" aria-label="Fechar">✕</button>
+            </div>
+
+            <div class="modal-tabs" role="tablist" aria-label="Opções de autenticação">
+                <button class="tab-btn active" role="tab" aria-selected="true" aria-controls="loginPanel"
+                    id="tabLogin">Login</button>
+                <button class="tab-btn" role="tab" aria-selected="false" aria-controls="registerPanel"
+                    id="tabRegister">Cadastrar</button>
+                <button class="tab-btn" role="tab" aria-selected="false" aria-controls="resetPanel"
+                    id="tabReset">Redefinir senha</button>
+            </div>
+
+            <div class="modal-body">
+                <div id="authMessage" class="auth-message" aria-live="assertive" style="display:none;"></div>
+
+                <!-- LOGIN -->
+                <form id="loginPanel" class="tab-content active" aria-hidden="false" novalidate>
+                    <label for="loginEmail">Email</label>
+                    <input id="loginEmail" name="email" type="email" placeholder="email@exemplo.com" required>
+
+                    <label for="loginPassword">Senha</label>
+                    <input id="loginPassword" name="password" type="password" placeholder="Senha" required
+                        minlength="4">
+
+                    <button type="submit" class="submit-btn">Entrar</button>
+                </form>
+
+                <!-- REGISTER -->
+                <form id="registerPanel" class="tab-content" aria-hidden="true" novalidate>
+                    <label for="regName">Nome</label>
+                    <input id="regName" name="name" type="text" placeholder="Seu nome" required>
+
+                    <label for="regEmail">Email</label>
+                    <input id="regEmail" name="email" type="email" placeholder="email@exemplo.com" required>
+
+                    <label for="regPassword">Senha</label>
+                    <input id="regPassword" name="password" type="password" placeholder="Senha (mín. 4 caracteres)"
+                        required minlength="4">
+
+                    <label for="regPasswordConfirm">Confirme a senha</label>
+                    <input id="regPasswordConfirm" name="passwordConfirm" type="password" placeholder="Repita a senha"
+                        required>
+
+                    <button type="submit" class="submit-btn">Cadastrar</button>
+                </form>
+
+                <!-- RESET PASSWORD -->
+                <form id="resetPanel" class="tab-content" aria-hidden="true" novalidate>
+                    <div id="resetStep1">
+                        <label for="resetEmail">Digite seu email</label>
+                        <input id="resetEmail" name="email" type="email" placeholder="email@exemplo.com" required>
+                        <div class="modal-actions">
+                            <button id="resetCheckBtn" type="button" class="submit-btn">Verificar email</button>
+                        </div>
+                    </div>
+                    <div id="resetStep2" style="display:none;">
+                        <label for="resetNewPassword">Nova senha</label>
+                        <input id="resetNewPassword" name="newPassword" type="password"
+                            placeholder="Nova senha (mín. 4 caracteres)" required minlength="4">
+                        <label for="resetNewPasswordConfirm">Confirme a nova senha</label>
+                        <input id="resetNewPasswordConfirm" name="newPasswordConfirm" type="password"
+                            placeholder="Repita a nova senha" required>
+                        <div class="modal-actions">
+                            <button id="resetDoBtn" type="button" class="submit-btn">Redefinir senha</button>
+                            <button id="resetBackBtn" type="button" class="btn-secondary">Voltar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/js/script1.js" defer></script>
+</body>
+
+</html>
